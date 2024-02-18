@@ -46,7 +46,7 @@
            status
     FROM user
     WHERE id = #{id}
-      AND passWord = #{password}
+      AND password = #{password}
       AND status != 'DELETE'
   </select>
 
@@ -73,7 +73,5 @@
   <update id="updatePassword" parameterType="com.example.boardserver.dto.UserDTO">
     UPDATE user
     SET passWord = #{password}
-    WHERE userId = #{userId}
   </update>
-
 </mapper>
