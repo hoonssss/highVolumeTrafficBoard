@@ -7,7 +7,7 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
+@ToString //(exclude = "password") 붙이면 password 제외
 public class UserDTO {
 
     public boolean hasNullDateBeforeRegister(UserDTO userDto) {
@@ -15,7 +15,7 @@ public class UserDTO {
     }
 
     public enum Status{
-        DEFAULT, ADMIN, DELETED
+        DEFAULT, ADMIN, DELETED, USER
     }
 
     private Integer id;

@@ -3,20 +3,24 @@ package com.example.boardserver.mapper;
 import com.example.boardserver.dto.UserDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Mapper
 public interface UserProfileMapper {
+
     public UserDTO getUserProfile(@Param("id") String id);
 
-    int insertUserProfile(@Param("id") String id, @Param("password") String password, @Param("name") String name, @Param("phone") String phone, @Param("address") String address);
+    int insertUserProfile(@Param("id") String id, @Param("password") String password,
+        @Param("name") String name, @Param("phone") String phone, @Param("address") String address);
 
-    int updateUserProfile(@Param("id") String id, @Param("password") String password, @Param("name") String name, @Param("phone") String phone, @Param("address") String address);
+    int updateUserProfile(@Param("id") String id, @Param("password") String password,
+        @Param("name") String name, @Param("phone") String phone, @Param("address") String address);
 
     int deleteUserProfile(@Param("id") String id);
 
     public int register(UserDTO userDTO);
 
-    public UserDTO findByIdAndPassword(@Param("id") String id,
+    public UserDTO findByIdAndPassword(@Param("accountId") String accountId,
         @Param("password") String password);
 
     public UserDTO findByUserIdAndPassword(@Param("userId") String userId,

@@ -1,5 +1,7 @@
 package com.example.boardserver.controller;
 
+import com.example.boardserver.aop.LoginCheck;
+import com.example.boardserver.aop.LoginCheck.UserType;
 import com.example.boardserver.dto.request.UserDatePasswordRequest;
 import com.example.boardserver.dto.request.UserDeleteRequest;
 import com.example.boardserver.dto.UserDTO;
@@ -17,10 +19,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -45,6 +49,7 @@ public class UserController {
     @PostMapping("/sign-in")
     public HttpStatus login(@RequestBody UserLoginRequest userLoginRequest, HttpSession session) {
 
+        ResponseEntity<LoginResponse> responseEntity = null;
         String id = userLoginRequest.getUserId();
         String password = userLoginRequest.getPassword();
         UserDTO userInfo = userService.login(id, password);
@@ -58,9 +63,10 @@ public class UserController {
                 SessionUtil.setLoginAdminId(session, id);
             } else {
                 SessionUtil.setLoginMemberId(session, id);
+                SessionUtil.setLoginMemberId(session, id);
             }
 
-            response = new ResponseEntity<LoginResponse>(loginResponse, HttpStatus.OK);
+            responseEntity = new ResponseEntity<LoginResponse>(loginResponse, HttpStatus.OK);
         } else {
             throw new RuntimeException("Login Error");
         }
@@ -71,9 +77,7 @@ public class UserController {
     @GetMapping("/my-info")
     public UserInfoResponse memberInfo(HttpSession session) {
         String id = SessionUtil.getLoginMemberId(session);
-        if (id == null) {
-            id = SessionUtil.getLoginAdminId(session);
-        }
+        if (id == null) id = SessionUtil.getLoginAdminId(session);
         UserDTO userDto = userService.getUserInfo(id);
         return new UserInfoResponse(userDto);
     }
@@ -83,26 +87,33 @@ public class UserController {
         SessionUtil.clear(session);
     }
 
-    @PatchMapping("/password")
-    public ResponseEntity<LoginResponse> updatePassword(
-        @RequestBody UserDatePasswordRequest userDatePasswordRequest, HttpSession session) {
-        String id = SessionUtil.getLoginMemberId(session);
-        String beforePassword = userDatePasswordRequest.getBeforePassword();
-        String afterPassword = userDatePasswordRequest.getAfterPassword();
+    @PatchMapping("password")
+    @LoginCheck(type = UserType.DEFAULT)
+    public ResponseEntity<LoginResponse> updateUserPassword(@RequestParam String accountId, @RequestBody UserDatePasswordRequest userUpdatePasswordRequest,
+        HttpSession session) {
+        ResponseEntity<LoginResponse> responseEntity = null;
+        String id = accountId;
+        String beforePassword = userUpdatePasswordRequest.getBeforePassword();
+        String afterPassword = userUpdatePasswordRequest.getAfterPassword();
+        if (id == null || beforePassword == null || afterPassword == null) {
+            throw new IllegalArgumentException("Parameters cannot be null");
+        }
 
         try {
             userService.updatePassword(id, beforePassword, afterPassword);
-            ResponseEntity.ok(new ResponseEntity<LoginResponse>(HttpStatus.OK));
+            UserDTO userInfo = userService.login(id, afterPassword);
+            LoginResponse loginResponse = LoginResponse.success(userInfo);
+            ResponseEntity.ok(new ResponseEntity<LoginResponse>(loginResponse, HttpStatus.OK));
         } catch (IllegalArgumentException e) {
-            log.error("updatePassword Error {}", e.getMessage());
-            response = new ResponseEntity<LoginResponse>(HttpStatus.BAD_REQUEST);
+            log.error("updatePassword 실패", e);
+            responseEntity = new ResponseEntity<LoginResponse>(HttpStatus.BAD_REQUEST);
         }
-        return response;
+        return responseEntity;
     }
-
     @DeleteMapping
     public ResponseEntity<LoginResponse> deleteId(@RequestBody UserDeleteRequest userDeleteId, HttpSession session){
         String id = SessionUtil.getLoginMemberId(session);
+        if(id==null) id = SessionUtil.getLoginAdminId(session);
         try {
             userService.deleteId(id, userDeleteId.getPassword());
             response = new ResponseEntity<LoginResponse>(HttpStatus.OK);
