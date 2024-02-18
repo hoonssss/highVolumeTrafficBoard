@@ -21,10 +21,4 @@
     WHERE id = #{id}
   </delete>
 
-  <select id="findById">
-    select id
-    from category
-    where id = {categoryId}
-  </select>
-
 </mapper>
