@@ -45,7 +45,7 @@ public class CategoryController {
         @RequestParam String accountId,
         @PathVariable(name = "categoryId") int categoryId,
         @RequestBody CategoryRequest categoryRequest ){
-        CategoryDTO categoryDTO = new CategoryDTO(categoryId,categoryRequest.getName(), SortStatus.NEWEST,10,1);
+        CategoryDTO categoryDTO = new CategoryDTO(categoryId, categoryRequest.getName(), SortStatus.NEWEST,10,1);
         categoryService.update(categoryDTO);
     }
 
