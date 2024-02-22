@@ -19,7 +19,7 @@ public class CategoryDTO {
 
     private int id;
     private String name;
-    private SortStatus status;
+    private SortStatus sortStatus;
     private int searchCount;
     private int pagingStartOffset;
 
