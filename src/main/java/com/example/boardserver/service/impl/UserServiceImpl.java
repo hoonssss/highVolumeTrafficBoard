@@ -1,6 +1,7 @@
 package com.example.boardserver.service.impl;
 
 import com.example.boardserver.dto.UserDTO;
+import com.example.boardserver.dto.UserDTO.Status;
 import com.example.boardserver.exception.DuplicateIdException;
 import com.example.boardserver.mapper.UserProfileMapper;
 import com.example.boardserver.service.UserService;
@@ -30,11 +31,18 @@ public class UserServiceImpl implements UserService {
     public void register(UserDTO userDTO) {
         boolean dupleIdResult = isDuplicatedId(userDTO.getUserId());
         if (dupleIdResult) { // 0 true 1 false / sql -> count
-            log.error("중복된 userId + [{}]",userDTO.getUserId());
+            log.error("중복된 userId + [{}]", userDTO.getUserId());
             throw new DuplicateIdException("중복된 아이디입니다.");
         }
         userDTO.setCreateTime(new Date());
         userDTO.setPassword(SHA256Util.encryptionKey(userDTO.getPassword()));
+        if (userDTO.isAdmin()) {
+            userDTO.setAdmin(true);
+            userDTO.setStatus(Status.ADMIN);
+            userProfileMapper.register(userDTO);
+        }
+        userDTO.setStatus(Status.USER);
+        userDTO.setAdmin(false);
         int insertCount = userProfileMapper.register(userDTO);
 
         if (insertCount != 1) { //모든 것이 성공하면 하나의 새 사용자 프로필을 삽입하므로 '1' 반환
@@ -66,7 +74,8 @@ public class UserServiceImpl implements UserService {
             userProfileMapper.updatePassword(memberInfo);
         } else {
             log.error("updatePassword ERROR! {}", memberInfo);
-            throw new IllegalArgumentException("updatePassword ERROR! 비밀번호 변경 메서드를 확인해주세요\n" + "Params : " + memberInfo);
+            throw new IllegalArgumentException(
+                "updatePassword ERROR! 비밀번호 변경 메서드를 확인해주세요\n" + "Params : " + memberInfo);
         }
     }
 

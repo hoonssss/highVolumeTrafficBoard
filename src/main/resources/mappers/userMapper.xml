@@ -8,7 +8,7 @@
   <select id="getUserProfile" resultType="com.example.boardserver.dto.UserDTO">
     SELECT id, userId, password, nickName, createTime, isWithDraw, status
     FROM user
-    WHERE id = #{id}
+    WHERE userId = #{id}
   </select>
 
   <insert id="insertUserProfile" parameterType="com.example.boardserver.dto.UserDTO">

@@ -12,6 +12,6 @@ public interface CategoryMapper {
 
     public void deleteCategory(int categoryId);
 
-    public void findById(int categoryId);
+    public CategoryDTO findById(int categoryId);
 
 }
