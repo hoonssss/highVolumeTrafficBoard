@@ -11,5 +11,6 @@ public @interface LoginCheck {
     public static enum UserType {
         USER, ADMIN, DEFAULT
     }
+    //DEFAULT 사용 고려
     UserType type();
 }

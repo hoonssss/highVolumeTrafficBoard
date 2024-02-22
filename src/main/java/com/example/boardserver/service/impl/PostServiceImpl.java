@@ -25,17 +25,22 @@ public class PostServiceImpl implements PostService {
     @Override
     public void register(String id, PostDTO postDTO) {
         UserDTO memberInfo = userProfileMapper.getUserProfile(id);
-        postDTO.setUserId(memberInfo.getId());
-        postDTO.setCreateTime(new Date());
-        CategoryDTO categoryId = categoryMapper.findById(postDTO.getCategoryId());
-
-        if (memberInfo != null && categoryId != null) {
-            postMapper.register(postDTO);
+        if (memberInfo != null) {
+            postDTO.setUserId(memberInfo.getId());
+            postDTO.setCreateTime(new Date());
+            CategoryDTO categoryId = categoryMapper.findById(postDTO.getCategoryId());
+            if (categoryId != null) {
+                postMapper.register(postDTO);
+            } else {
+                log.error("register error [{}]", postDTO);
+                throw new RuntimeException("register error: invalid categoryId " + postDTO);
+            }
         } else {
             log.error("register error [{}]", postDTO);
-            throw new RuntimeException("register error " + postDTO);
+            throw new RuntimeException("register error: invalid userId " + postDTO);
         }
     }
+
 
     @Override
     public List<PostDTO> getMyPosts(int accountId) {
