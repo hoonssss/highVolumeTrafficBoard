@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -82,8 +81,7 @@ public class PostController {
     @LoginCheck(type = UserType.USER)
     public ResponseEntity<CommonResponse<PostDeleteRequest>> deletePosts(
         @RequestParam String accountId,
-        @PathVariable(name = "postId") int postId,
-        @RequestBody PostDeleteRequest postDeleteRequest) {
+        @PathVariable(name = "postId") int postId) {
         UserDTO memberInfo = userService.getUserInfo(accountId);
         postService.deletePosts(memberInfo.getId(), postId);
         CommonResponse commonResponse = new CommonResponse<>(HttpStatus.OK, "SUCCESS", "deletePost",
