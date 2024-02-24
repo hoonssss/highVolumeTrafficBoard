@@ -6,10 +6,11 @@
 <mapper namespace="com.example.boardserver.mapper.PostMapper">
 
   <insert id="register" parameterType="com.example.boardserver.dto.PostDTO">
-    insert into post (name, isAdmin, contents, createTime, views, categoryId, userId, fileId,
-                      updateTime)
-    values (#{name}, #{isAdmin}, #{contents}, #{createTime}, #{views}, #{categoryId}, #{userId},
-            #{fileId}, #{updateTime})
+    <selectKey resultType="int" keyProperty="id" order="AFTER">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    INSERT INTO post (name, isAdmin, contents, createTime, views, categoryId, userId, fileId, updateTime )
+    VALUES (#{name}, #{isAdmin}, #{contents}, #{createTime}, #{views}, #{categoryId}, #{userId}, #{fileId}, #{updateTime})
   </insert>
 
   <select id="selectMyPosts" resultType="com.example.boardserver.dto.PostDTO">
@@ -29,12 +30,12 @@
 
   <update id="updatePosts" parameterType="com.example.boardserver.dto.PostDTO">
     update post
-    set name = #{name},
-        contents = #{contents},
-        views = #{views},
+    set name       = #{name},
+        contents   = #{contents},
+        views      = #{views},
         categoryId = #{categoryId},
-        userId = #{userId},
-        fileId = #{fileId},
+        userId     = #{userId},
+        fileId     = #{fileId},
         updateTime = #{updateTime}
     where id = #{id}
   </update>

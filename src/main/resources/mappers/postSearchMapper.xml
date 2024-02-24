@@ -37,7 +37,22 @@
     <if test="sortStatus.toString() == 'CATEGORIES'">
       ORDER BY categoryId
     </if>
+  </select>
 
+  <select id="getPostByTag" resultType="com.example.boardserver.dto.request.PostSearchRequest">
+    SELECT p.`id`,
+           p.`name`,
+           p.`isAdmin`,
+           p.`contents`,
+           p.`createTime`,
+           p.`views`,
+           p.`categoryId`,
+           p.`userId`,
+           p.`fileId`,
+           p.`updateTime`
+    FROM post p
+           JOIN tag t ON p.id = t.postId
+    WHERE t.name = #{tagName}
   </select>
 
 </mapper>

@@ -28,4 +28,15 @@ public class PostSearchServiceImpl implements PostSearchService {
         }
         return postDTOS;
     }
+
+    @Override
+    public List<PostDTO> getPostByTag(String tagName) {
+        List<PostDTO> postDTOS = null;
+        try {
+            postDTOS = postSearchMapper.getPostByTag(tagName);
+        }catch (RuntimeException e){
+            log.error("getPostByTag Error {}" , e.getMessage());
+        }
+        return postDTOS;
+    }
 }
