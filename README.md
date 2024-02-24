@@ -15,7 +15,7 @@
 
 ---
 # 성능테스트 툴
-- Python 3.9, Locust
+- Python 3.9, Locust (https://blog.naver.com/hoonssss-/223364079440)
 
 ---
 # 기획
