@@ -6,8 +6,8 @@
 <mapper namespace="com.example.boardserver.mapper.TagMapper">
 
   <insert id="register" parameterType="com.example.boardserver.dto.TagDTO">
-    insert into tag(name, url)
-    values (#{name},#{url})
+    insert into tag(name, url,postId,tagId)
+    values (#{name},#{url},#{postId},id)
     /* tagDTO Id값에 설정 Integer로 가져오겠다라는 설정 */
     <selectKey keyProperty="id" resultType="Integer">
       select LAST_INSERT_ID()
