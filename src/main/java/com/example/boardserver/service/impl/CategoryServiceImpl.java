@@ -17,7 +17,13 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void register(String accountId, CategoryDTO categoryDTO) {
         if (accountId != null) {
-            categoryMapper.register(categoryDTO);
+            try {
+                categoryMapper.register(categoryDTO);
+            } catch (RuntimeException e) {
+                log.error("register Error {}", categoryDTO);
+                throw new RuntimeException("register Error " + categoryDTO);
+
+            }
         } else {
             log.error("register Error {}", categoryDTO);
             throw new RuntimeException("register Error " + categoryDTO);
@@ -27,7 +33,12 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void update(CategoryDTO categoryDTO) {
         if (categoryDTO != null) {
-            categoryMapper.updateCategory(categoryDTO);
+            try {
+                categoryMapper.updateCategory(categoryDTO);
+            } catch (RuntimeException e) {
+                log.error("update Error {} ", categoryDTO);
+                throw new RuntimeException("update Error " + categoryDTO);
+            }
         } else {
             log.error("update Error {} ", categoryDTO);
             throw new RuntimeException("update Error " + categoryDTO);
@@ -36,8 +47,14 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void delete(int categoryId) {
-        if(categoryId != 0){
-            categoryMapper.deleteCategory(categoryId);
+        if (categoryId != 0) {
+            try {
+
+                categoryMapper.deleteCategory(categoryId);
+            } catch (RuntimeException e) {
+                log.error("delete Error {} ", categoryId);
+                throw new RuntimeException("delete Error " + categoryId);
+            }
         } else {
             log.error("delete Error {} ", categoryId);
             throw new RuntimeException("delete Error " + categoryId);
