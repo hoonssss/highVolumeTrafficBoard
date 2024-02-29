@@ -1,11 +1,13 @@
 package com.example.boardserver.controller;
 
 import com.example.boardserver.config.AWSConfig;
+import com.example.boardserver.service.SlackService;
 import com.example.boardserver.service.SnsService;
 import java.util.Map;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,10 +28,12 @@ public class SnsController {
 
     private final AWSConfig awsConfig;
     private final SnsService snsService;
+    private final SlackService slackService;
 
-    public SnsController(AWSConfig awsConfig, SnsService snsService){
+    public SnsController(AWSConfig awsConfig, SnsService snsService, SlackService slackService){
         this.awsConfig = awsConfig;
         this.snsService = snsService;
+        this.slackService = slackService;
     }
 
 
@@ -89,6 +93,12 @@ public class SnsController {
         return new ResponseStatusException(
             HttpStatus.INTERNAL_SERVER_ERROR, snsResponse.sdkHttpResponse().statusText().get()
         );
+    }
+
+    //slack
+    @GetMapping("/slack/error")
+    public void error(){
+        slackService.sendSlackMessage("슬랙 에러 테스트", "error");
     }
 
 }
