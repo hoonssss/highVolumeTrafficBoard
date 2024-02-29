@@ -35,3 +35,8 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### logs file
+logs
+### Exclude application.properties
+main/resources/application.properties
