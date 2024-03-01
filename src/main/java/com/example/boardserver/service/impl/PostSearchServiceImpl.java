@@ -4,6 +4,7 @@ import com.example.boardserver.dto.PostDTO;
 import com.example.boardserver.dto.request.PostSearchRequest;
 import com.example.boardserver.mapper.PostSearchMapper;
 import com.example.boardserver.service.PostSearchService;
+import com.example.boardserver.service.SlackService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 public class PostSearchServiceImpl implements PostSearchService {
 
     private final PostSearchMapper postSearchMapper;
+    private final SlackService slackService;
 
     @Async //비동기
     @Cacheable(value = "getPosts", key = "'getPosts' + #postSearchRequest.getName() + #postSearchRequest.getCategoryId()")
@@ -27,6 +29,7 @@ public class PostSearchServiceImpl implements PostSearchService {
             postDTOS = postSearchMapper.selectPosts(postSearchRequest);
         }catch (RuntimeException e){
             log.error("select Posts Method Error {}", e.getMessage() );
+            slackService.sendSlackMessage("selectPost Error : " + e.getMessage(), "error");
         }
         return postDTOS;
     }

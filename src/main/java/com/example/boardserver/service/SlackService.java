@@ -8,7 +8,6 @@ import java.io.IOException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import software.amazon.ion.IonException;
 
 @Service
 @Log4j2
@@ -21,9 +20,8 @@ public class SlackService {
         String channelAddress = "";
 
         if(channel.equals("error")){
-            channelAddress = "#모니터링";
+            channelAddress = "일반";
         }
-
         try {
             MethodsClient methodsClient = Slack.getInstance().methods(slackToken);
             ChatPostMessageRequest request = ChatPostMessageRequest.builder()
