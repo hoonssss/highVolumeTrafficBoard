@@ -19,7 +19,5 @@ public class AWSConfig {
 
     @Value("${aws.region}")
     private String awsRegion;
-
-
-
+    
 }
